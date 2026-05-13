@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Geo Guess Kids — Learn & Quiz</title>
+<meta name="description" content="A free visual quiz app for kids. Learn countries, flags, dinosaurs, animals, shapes and more. Available on iOS and Android." />
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary:   #4D96FF;
+    --green:     #6BCB77;
+    --red:       #FF6B6B;
+    --orange:    #FF922B;
+    --yellow:    #FFD93D;
+    --purple:    #CC5DE8;
+    --bg:        #FFF9F0;
+    --card:      #ffffff;
+    --text:      #333333;
+    --muted:     #888888;
+    --radius:    18px;
+    --shadow:    0 4px 18px rgba(0,0,0,0.10);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+         background: var(--bg); color: var(--text); line-height: 1.5; }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+  button { cursor: pointer; border: none; font-family: inherit; }
+
+  /* ── Layout helpers ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  .hidden { display: none !important; }
+
+  /* ══════════════════════════════════
+     NAVBAR
+  ══════════════════════════════════ */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,249,240,0.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid #f0e8da;
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-size: 1.3rem; font-weight: 800; color: var(--red); }
+  .nav-links { display: flex; gap: 24px; font-size: 0.95rem; font-weight: 600; }
+  .nav-links a { color: var(--muted); transition: color .2s; }
+  .nav-links a:hover { color: var(--primary); }
+  .nav-cta {
+    background: var(--primary); color: #fff;
+    padding: 9px 22px; border-radius: 30px;
+    font-weight: 700; font-size: 0.9rem;
+    transition: background .2s, transform .15s;
+  }
+  .nav-cta:hover { background: #3a7de8; transform: scale(1.04); }
+
+  /* ══════════════════════════════════
+     HERO
+  ══════════════════════════════════ */
+  #hero {
+    text-align: center;
+    padding: 80px 20px 60px;
+    background: linear-gradient(160deg, #fff7ed 0%, #e8f4ff 100%);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: #fff3cd; color: #856404;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: .06em;
+    padding: 5px 14px; border-radius: 20px; margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  #hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 900; color: var(--red); line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  #hero p {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: #555; max-width: 560px; margin: 0 auto 36px;
+  }
+  .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--primary); color: #fff;
+    padding: 14px 34px; border-radius: 30px;
+    font-size: 1.05rem; font-weight: 800;
+    box-shadow: 0 4px 14px rgba(77,150,255,.4);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(77,150,255,.5); }
+  .btn-secondary {
+    background: #fff; color: var(--primary);
+    border: 2px solid var(--primary);
+    padding: 13px 34px; border-radius: 30px;
+    font-size: 1.05rem; font-weight: 800;
+    transition: background .2s, color .2s;
+  }
+  .btn-secondary:hover { background: var(--primary); color: #fff; }
+
+  .hero-phone {
+    margin: 50px auto 0;
+    width: 200px; height: 360px;
+    background: #1a1a2e;
+    border-radius: 36px;
+    border: 6px solid #333;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-phone-screen {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 10px;
+    gap: 8px;
+  }
+  .hero-phone-title {
+    font-size: 0.7rem; font-weight: 900; color: var(--red); text-align: center;
+  }
+  .hero-phone-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%;
+  }
+  .hero-phone-card {
+    border-radius: 10px; height: 52px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 2px;
+  }
+  .hero-phone-card span:first-child { font-size: 1.4rem; }
+  .hero-phone-card span:last-child  { font-size: 0.45rem; font-weight: 700; color: #fff; }
+
+  /* ══════════════════════════════════
+     STATS BAR
+  ══════════════════════════════════ */
+  #stats {
+    background: var(--primary);
+    padding: 28px 20px;
+    display: flex; justify-content: center;
+    gap: 60px; flex-wrap: wrap;
+  }
+  .stat { text-align: center; color: #fff; }
+  .stat-num { font-size: 2rem; font-weight: 900; display: block; }
+  .stat-lbl { font-size: 0.85rem; opacity: .85; }
+
+  /* ══════════════════════════════════
+     CATEGORIES SECTION
+  ══════════════════════════════════ */
+  #categories { padding: 72px 20px; }
+  .section-title {
+    text-align: center; font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 900; margin-bottom: 10px;
+  }
+  .section-sub { text-align: center; color: var(--muted); margin-bottom: 44px; font-size: 1rem; }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+  }
+  .cat-card {
+    border-radius: var(--radius);
+    padding: 22px 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform .2s, box-shadow .2s;
+    user-select: none;
+  }
+  .cat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,.15); }
+  .cat-card .cat-emoji { font-size: 2.4rem; }
+  .cat-card .cat-label {
+    font-size: 0.85rem; font-weight: 800; color: #fff;
+    text-align: center; line-height: 1.2;
+  }
+  .cat-card .cat-count {
+    font-size: 0.72rem; color: rgba(255,255,255,.8); font-weight: 600;
+  }
+
+  /* ══════════════════════════════════
+     FEATURES SECTION
+  ══════════════════════════════════ */
+  #features {
+    background: linear-gradient(160deg, #e8f4ff 0%, #fff7ed 100%);
+    padding: 72px 20px;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px; margin-top: 44px;
+  }
+  .feature-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 28px 24px; box-shadow: var(--shadow);
+  }
+  .feature-icon { font-size: 2.2rem; margin-bottom: 14px; }
+  .feature-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; }
+  .feature-desc { font-size: 0.9rem; color: #666; line-height: 1.6; }
+
+  /* ══════════════════════════════════
+     QUIZ SECTION
+  ══════════════════════════════════ */
+  #quiz { padding: 72px 20px; }
+
+  /* Category picker */
+  #quiz-picker { max-width: 800px; margin: 0 auto; }
+  #quiz-picker .section-sub { margin-bottom: 28px; }
+  .quiz-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px; margin-bottom: 20px;
+  }
+  .quiz-cat-btn {
+    border-radius: 14px; padding: 16px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    transition: transform .15s, box-shadow .15s;
+    background: var(--card); border: 2px solid transparent;
+  }
+  .quiz-cat-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.13); }
+  .quiz-cat-btn.selected { border-color: var(--primary); background: #eef4ff; }
+  .quiz-cat-btn .qcb-emoji { font-size: 1.8rem; }
+  .quiz-cat-btn .qcb-name  { font-size: 0.75rem; font-weight: 700; color: #444; text-align: center; }
+  .quiz-start-row { text-align: center; margin-top: 28px; }
+
+  /* Quiz game */
+  #quiz-game { max-width: 540px; margin: 0 auto; display: none; }
+  .quiz-topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .quiz-progress { font-size: 1rem; font-weight: 700; color: var(--muted); }
+  .quiz-score    { font-size: 1rem; font-weight: 800; color: var(--primary); }
+  .quiz-img-card {
+    background: var(--card); border-radius: 24px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    min-height: 260px;
+  }
+  .quiz-img-card img {
+    max-width: 100%; max-height: 220px;
+    object-fit: contain; border-radius: 12px;
+  }
+  .quiz-flag-emoji { font-size: 7rem; line-height: 1; }
+  .quiz-color-swatch {
+    width: 160px; height: 160px; border-radius: 20px;
+  }
+  .quiz-shape-svg { width: 140px; height: 140px; }
+  .quiz-question {
+    font-size: 1.25rem; font-weight: 800; text-align: center;
+    margin-bottom: 20px; color: #444;
+  }
+  .choices-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 20px;
+  }
+  .choice-btn {
+    background: var(--card); border: 2px solid #ddd;
+    border-radius: 14px; padding: 16px 10px;
+    font-size: 0.95rem; font-weight: 700; color: #333;
+    text-align: center; transition: background .15s, border-color .15s;
+    min-height: 58px;
+    display: flex; align-items: center; justify-content: center;
+    word-break: break-word;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: var(--primary); background: #eef4ff; }
+  .choice-btn.correct { background: var(--green); border-color: #4aaa59; color: #fff; }
+  .choice-btn.wrong   { background: var(--red);   border-color: #cc4444; color: #fff; }
+  .choice-btn:disabled { cursor: default; }
+  .quiz-next-btn {
+    display: block; width: 100%;
+    background: var(--primary); color: #fff;
+    padding: 16px; border-radius: 16px;
+    font-size: 1.1rem; font-weight: 800;
+    transition: background .15s, transform .1s;
+  }
+  .quiz-next-btn:hover { background: #3a7de8; transform: scale(1.01); }
+  .quiz-next-btn.go-green { background: var(--green); }
+  .quiz-back-btn {
+    background: none; border: none; color: var(--muted);
+    font-size: 0.9rem; font-weight: 700; margin-top: 14px;
+    display: block; width: 100%; text-align: center;
+    cursor: pointer; padding: 6px;
+  }
+  .quiz-back-btn:hover { color: var(--primary); }
+
+  /* Results */
+  #quiz-results {
+    max-width: 400px; margin: 0 auto;
+    text-align: center; display: none;
+  }
+  .result-emoji { font-size: 5rem; margin-bottom: 12px; }
+  .result-title { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
+  .result-score { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+  .result-pct   { font-size: 1.1rem; color: var(--muted); margin-bottom: 28px; }
+
+  /* ══════════════════════════════════
+     DOWNLOAD / CTA
+  ══════════════════════════════════ */
+  #download {
+    background: linear-gradient(135deg, var(--primary) 0%, #7b5ea7 100%);
+    padding: 72px 20px; text-align: center; color: #fff;
+  }
+  #download h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; margin-bottom: 14px; }
+  #download p  { font-size: 1.1rem; opacity: .88; max-width: 480px; margin: 0 auto 36px; }
+  .store-btns  { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .store-btn {
+    background: rgba(255,255,255,.15);
+    border: 2px solid rgba(255,255,255,.5);
+    color: #fff; border-radius: 14px;
+    padding: 14px 28px;
+    font-size: 1rem; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    transition: background .2s;
+  }
+  .store-btn:hover { background: rgba(255,255,255,.25); }
+  .store-btn-icon { font-size: 1.6rem; }
+
+  /* ══════════════════════════════════
+     FOOTER
+  ══════════════════════════════════ */
+  footer {
+    background: #1a1a2e; color: rgba(255,255,255,.6);
+    padding: 32px 20px; text-align: center;
+    font-size: 0.85rem; line-height: 2;
+  }
+  footer strong { color: rgba(255,255,255,.9); }
+
+  /* ══════════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════════ */
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    #stats { gap: 30px; }
+    .quiz-img-card { min-height: 200px; }
+    .quiz-flag-emoji { font-size: 5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ NAVBAR ════════════════ -->
+<nav>
+  <span class="nav-logo">🌍 Geo Guess Kids</span>
+  <div class="nav-links">
+    <a href="#categories">Categories</a>
+    <a href="#features">Features</a>
+    <a href="#quiz">Play Demo</a>
+    <a href="#download">Download</a>
+  </div>
+  <a href="#quiz" class="nav-cta">Play Now →</a>
+</nav>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section id="hero">
+  <div class="hero-badge">🎉 Free for kids — no ads, no accounts</div>
+  <h1>Learn the World,<br>One Guess at a Time</h1>
+  <p>Visual flashcards and quizzes covering 15 categories — flags, countries, dinosaurs, animals, states and more. For curious kids aged 4–12.</p>
+  <div class="hero-btns">
+    <a href="#quiz" class="btn-primary">Play the Demo ▶</a>
+    <a href="#download" class="btn-secondary">Get the App</a>
+  </div>
+
+  <div class="hero-phone">
+    <div class="hero-phone-screen">
+      <div class="hero-phone-title">Geo Guess Kids</div>
+      <div class="hero-phone-grid" id="heroPhoneGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ STATS ════════════════ -->
+<section id="stats">
+  <div class="stat"><span class="stat-num">15</span><span class="stat-lbl">Categories</span></div>
+  <div class="stat"><span class="stat-num">500+</span><span class="stat-lbl">Items to Learn</span></div>
+  <div class="stat"><span class="stat-num">2</span><span class="stat-lbl">Platforms</span></div>
+  <div class="stat"><span class="stat-num">∞</span><span class="stat-lbl">Replays</span></div>
+</section>
+
+<!-- ════════════════ CATEGORIES ════════════════ -->
+<section id="categories">
+  <div class="container">
+    <h2 class="section-title">15 Categories to Explore</h2>
+    <p class="section-sub">Tap any category to jump straight into the quiz</p>
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+</section>
+
+<!-- ════════════════ FEATURES ════════════════ -->
+<section id="features">
+  <div class="container">
+    <h2 class="section-title">Built for Young Learners</h2>
+    <p class="section-sub">Every design decision is made with kids in mind</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🖼️</div>
+        <div class="feature-title">Real Photos & Maps</div>
+        <div class="feature-desc">Wikipedia-sourced images for every item — not cartoon illustrations. Kids see the real world, not a simplified version of it.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔊</div>
+        <div class="feature-title">Voice Pronunciation</div>
+        <div class="feature-desc">Tap "Say it!" on any card and the app speaks the name aloud. Perfect for early readers or learning tricky pronunciations like Pterodactyl.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <div class="feature-title">Location Maps</div>
+        <div class="feature-desc">USA States, India States, and Countries all show the location highlighted on a real world map — geography the way it should be learned.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">Scored Quizzes</div>
+        <div class="feature-desc">4-choice multiple choice quiz for every category. Score shown after each round with a fun emoji trophy based on how well you did.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">iOS & Android</div>
+        <div class="feature-desc">Native app on both platforms. Fast Refresh means instant updates without a full install. Built with React Native and Expo SDK 54.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📬</div>
+        <div class="feature-title">Parent Inbox</div>
+        <div class="feature-desc">Parents can send reminders and achievements directly to the app via Salesforce Marketing Cloud. No social media, no distractions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ QUIZ SECTION ════════════════ -->
+<section id="quiz">
+  <div class="container">
+    <h2 class="section-title">Play the Demo</h2>
+    <p class="section-sub">Pick a category and test yourself right here in the browser</p>
+
+    <!-- Category picker -->
+    <div id="quiz-picker">
+      <div class="quiz-cat-grid" id="quizCatGrid"></div>
+      <div class="quiz-start-row">
+        <button class="btn-primary" id="startQuizBtn" onclick="startQuiz()" style="display:none">Start Quiz ▶</button>
+      </div>
+    </div>
+
+    <!-- Game -->
+    <div id="quiz-game">
+      <div class="quiz-topbar">
+        <span class="quiz-progress" id="qProgress">1 / 10</span>
+        <span class="quiz-score" id="qScore">Score: 0</span>
+      </div>
+      <div class="quiz-img-card" id="qImgCard"></div>
+      <div class="quiz-question">What is this?</div>
+      <div class="choices-grid" id="qChoices"></div>
+      <button class="quiz-next-btn hidden" id="qNextBtn" onclick="nextQuestion()">Next ▶</button>
+      <button class="quiz-back-btn" onclick="backToPicker()">← Change category</button>
+    </div>
+
+    <!-- Results -->
+    <div id="quiz-results">
+      <div class="result-emoji" id="rEmoji">🏆</div>
+      <div class="result-title" id="rTitle">Amazing!</div>
+      <div class="result-score" id="rScore">8 / 10</div>
+      <div class="result-pct" id="rPct">80%</div>
+      <button class="btn-primary" onclick="restartQuiz()" style="margin: 0 auto; display:block">Play Again 🔄</button>
+      <button class="quiz-back-btn" onclick="backToPicker()">← Change category</button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ DOWNLOAD ════════════════ -->
+<section id="download">
+  <h2>Get the Full App</h2>
+  <p>All 15 categories, voice pronunciation, learn mode + quiz mode, and a parent inbox — completely free.</p>
+  <div class="store-btns">
+    <span class="store-btn"><span class="store-btn-icon">🍎</span><span><strong>App Store</strong><br><small>Coming soon</small></span></span>
+    <span class="store-btn"><span class="store-btn-icon">🤖</span><span><strong>Google Play</strong><br><small>Coming soon</small></span></span>
+  </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <strong>Geo Guess Kids</strong> — A visual learning app for curious kids<br>
+  Built with React Native · Expo SDK 54 · Available on iOS &amp; Android<br>
+  All logos, trademarks and images are copyright of their respective owners. No copyright infringement is intended.<br>
+  Images sourced from Wikipedia / Wikimedia Commons under Creative Commons licenses.
+</footer>
+
+<!-- ════════════════════════════════════════
+     DATA + QUIZ ENGINE
+════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── Data ──────────────────────────────────────────────────────────────
+const DATA = {
+  cars: {
+    label: 'Car Logos', emoji: '🚗', color: '#FF6B6B',
+    items: [
+      { id:'car_toyota',   name:'Toyota' },
+      { id:'car_bmw',      name:'BMW' },
+      { id:'car_ford',     name:'Ford' },
+      { id:'car_honda',    name:'Honda' },
+      { id:'car_mercedes', name:'Mercedes-Benz' },
+      { id:'car_audi',     name:'Audi' },
+      { id:'car_vw',       name:'Volkswagen' },
+      { id:'car_ferrari',  name:'Ferrari' },
+      { id:'car_porsche',  name:'Porsche' },
+      { id:'car_tesla',    name:'Tesla' },
+    ],
+    type: 'text'
+  },
+  flags: {
+    label: 'Country Flags', emoji: '🌍', color: '#4ECDC4',
+    items: [
+      {id:'fl_us',name:'United States',emoji:'🇺🇸'},{id:'fl_gb',name:'United Kingdom',emoji:'🇬🇧'},
+      {id:'fl_fr',name:'France',emoji:'🇫🇷'},{id:'fl_de',name:'Germany',emoji:'🇩🇪'},
+      {id:'fl_jp',name:'Japan',emoji:'🇯🇵'},{id:'fl_in',name:'India',emoji:'🇮🇳'},
+      {id:'fl_cn',name:'China',emoji:'🇨🇳'},{id:'fl_br',name:'Brazil',emoji:'🇧🇷'},
+      {id:'fl_au',name:'Australia',emoji:'🇦🇺'},{id:'fl_ca',name:'Canada',emoji:'🇨🇦'},
+      {id:'fl_mx',name:'Mexico',emoji:'🇲🇽'},{id:'fl_it',name:'Italy',emoji:'🇮🇹'},
+      {id:'fl_es',name:'Spain',emoji:'🇪🇸'},{id:'fl_ru',name:'Russia',emoji:'🇷🇺'},
+      {id:'fl_za',name:'South Africa',emoji:'🇿🇦'},{id:'fl_ng',name:'Nigeria',emoji:'🇳🇬'},
+      {id:'fl_sa',name:'Saudi Arabia',emoji:'🇸🇦'},{id:'fl_kr',name:'South Korea',emoji:'🇰🇷'},
+      {id:'fl_tr',name:'Turkey',emoji:'🇹🇷'},{id:'fl_ar',name:'Argentina',emoji:'🇦🇷'},
+    ],
+    type: 'flag'
+  },
+  continents: {
+    label: 'Continents', emoji: '🗺️', color: '#74C0FC',
+    items: [
+      {id:'cont_africa',     name:'Africa',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Africa_%28orthographic_projection%29.svg/500px-Africa_%28orthographic_projection%29.svg.png'},
+      {id:'cont_antarctica', name:'Antarctica',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Antarctica_%28orthographic_projection%29.svg/500px-Antarctica_%28orthographic_projection%29.svg.png'},
+      {id:'cont_asia',       name:'Asia',         image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Asia_%28orthographic_projection%29.svg/500px-Asia_%28orthographic_projection%29.svg.png'},
+      {id:'cont_australia',  name:'Australia',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Oceania_%28orthographic_projection%29.svg/500px-Oceania_%28orthographic_projection%29.svg.png'},
+      {id:'cont_europe',     name:'Europe',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Europe_orthographic_Caucasus_Urals_boundary_%28with_borders%29.svg/500px-Europe_orthographic_Caucasus_Urals_boundary_%28with_borders%29.svg.png'},
+      {id:'cont_namerica',   name:'North America',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Location_North_America.svg/500px-Location_North_America.svg.png'},
+      {id:'cont_samerica',   name:'South America',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/South_America_%28orthographic_projection%29.svg/500px-South_America_%28orthographic_projection%29.svg.png'},
+    ],
+    type: 'image'
+  },
+  countries: {
+    label: 'Countries', emoji: '🌐', color: '#CC5DE8',
+    items: [
+      {id:'country_us',name:'United States',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/United_States_in_the_world_%28W3%29.svg/500px-United_States_in_the_world_%28W3%29.svg.png'},
+      {id:'country_cn',name:'China',            image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/China_in_the_world_%28de-facto%29_%28W3%29.svg/500px-China_in_the_world_%28de-facto%29_%28W3%29.svg.png'},
+      {id:'country_de',name:'Germany',          image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Germany_in_the_world_%28W3%29.svg/500px-Germany_in_the_world_%28W3%29.svg.png'},
+      {id:'country_jp',name:'Japan',            image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Japan_in_the_world_%28de-facto%29_%28W3%29.svg/500px-Japan_in_the_world_%28de-facto%29_%28W3%29.svg.png'},
+      {id:'country_in',name:'India',            image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/India_in_the_world_%28undisputed%29_%28W3%29.svg/500px-India_in_the_world_%28undisputed%29_%28W3%29.svg.png'},
+      {id:'country_gb',name:'United Kingdom',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/United_Kingdom_in_the_world_%28%2Bdependent_territories%29_%28W3%29.svg/500px-United_Kingdom_in_the_world_%28%2Bdependent_territories%29_%28W3%29.svg.png'},
+      {id:'country_fr',name:'France',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/France_in_the_world_%28mainland_only%29_%28W3%29.svg/500px-France_in_the_world_%28mainland_only%29_%28W3%29.svg.png'},
+      {id:'country_br',name:'Brazil',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Brazil_in_the_world_%28W3%29.svg/500px-Brazil_in_the_world_%28W3%29.svg.png'},
+      {id:'country_it',name:'Italy',            image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Italy_in_the_world_%28W3%29.svg/500px-Italy_in_the_world_%28W3%29.svg.png'},
+      {id:'country_ca',name:'Canada',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Canada_in_the_world_%28W3%29.svg/500px-Canada_in_the_world_%28W3%29.svg.png'},
+      {id:'country_kr',name:'South Korea',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/South_Korea_in_the_world_%28W3%29.svg/500px-South_Korea_in_the_world_%28W3%29.svg.png'},
+      {id:'country_ru',name:'Russia',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Russia_in_the_world_%28de-facto%29_%28W3%29.svg/500px-Russia_in_the_world_%28de-facto%29_%28W3%29.svg.png'},
+      {id:'country_au',name:'Australia',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Australia_in_the_world_%28de-facto%29_%28W3%29.svg/500px-Australia_in_the_world_%28de-facto%29_%28W3%29.svg.png'},
+      {id:'country_mx',name:'Mexico',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Mexico_in_the_world_%28W3%29.svg/500px-Mexico_in_the_world_%28W3%29.svg.png'},
+      {id:'country_sa',name:'Saudi Arabia',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Saudi_Arabia_in_the_world_%28W3%29.svg/500px-Saudi_Arabia_in_the_world_%28W3%29.svg.png'},
+      {id:'country_es',name:'Spain',            image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Spain_in_the_world_%28W3%29.svg/500px-Spain_in_the_world_%28W3%29.svg.png'},
+      {id:'country_id',name:'Indonesia',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Indonesia_in_the_world_%28W3%29.svg/500px-Indonesia_in_the_world_%28W3%29.svg.png'},
+      {id:'country_nl',name:'Netherlands',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Netherlands_in_the_world_%28W3%29.svg/500px-Netherlands_in_the_world_%28W3%29.svg.png'},
+      {id:'country_ch',name:'Switzerland',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Switzerland_in_the_world_%28W3%29.svg/500px-Switzerland_in_the_world_%28W3%29.svg.png'},
+      {id:'country_ae',name:'UAE',              image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/United_Arab_Emirates_in_the_world_%28W3%29.svg/500px-United_Arab_Emirates_in_the_world_%28W3%29.svg.png'},
+      {id:'country_se',name:'Sweden',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Sweden_in_the_world_%28W3%29.svg/500px-Sweden_in_the_world_%28W3%29.svg.png'},
+      {id:'country_no',name:'Norway',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Norway_in_the_world_%28mainland_only%29_%28W3%29.svg/500px-Norway_in_the_world_%28mainland_only%29_%28W3%29.svg.png'},
+      {id:'country_il',name:'Israel',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Israel_in_the_world_%28W3%29.svg/500px-Israel_in_the_world_%28W3%29.svg.png'},
+      {id:'country_sg',name:'Singapore',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Singapore_in_the_World.svg/500px-Singapore_in_the_World.svg.png'},
+      {id:'country_tr',name:'Turkey',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Turkey_in_the_world_%28W3%29.svg/500px-Turkey_in_the_world_%28W3%29.svg.png'},
+    ],
+    type: 'image'
+  },
+  usastates: {
+    label: 'USA States', emoji: '🇺🇸', color: '#E03131',
+    items: [
+      {id:'state_ca',name:'California',  image:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/California_in_United_States.svg/500px-California_in_United_States.svg.png'},
+      {id:'state_tx',name:'Texas',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Texas_in_United_States.svg/500px-Texas_in_United_States.svg.png'},
+      {id:'state_ny',name:'New York',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/New_York_in_United_States.svg/500px-New_York_in_United_States.svg.png'},
+      {id:'state_fl',name:'Florida',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Florida_in_United_States.svg/500px-Florida_in_United_States.svg.png'},
+      {id:'state_il',name:'Illinois',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Illinois_in_United_States.svg/500px-Illinois_in_United_States.svg.png'},
+      {id:'state_wa',name:'Washington',  image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Washington_in_United_States.svg/500px-Washington_in_United_States.svg.png'},
+      {id:'state_az',name:'Arizona',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Arizona_in_United_States.svg/500px-Arizona_in_United_States.svg.png'},
+      {id:'state_co',name:'Colorado',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Colorado_in_United_States.svg/500px-Colorado_in_United_States.svg.png'},
+      {id:'state_ga',name:'Georgia',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Georgia_in_United_States.svg/500px-Georgia_in_United_States.svg.png'},
+      {id:'state_nc',name:'North Carolina',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/North_Carolina_in_United_States.svg/500px-North_Carolina_in_United_States.svg.png'},
+      {id:'state_mi',name:'Michigan',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Michigan_in_United_States.svg/500px-Michigan_in_United_States.svg.png'},
+      {id:'state_oh',name:'Ohio',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Ohio_in_United_States.svg/500px-Ohio_in_United_States.svg.png'},
+      {id:'state_pa',name:'Pennsylvania',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Pennsylvania_in_United_States.svg/500px-Pennsylvania_in_United_States.svg.png'},
+      {id:'state_tn',name:'Tennessee',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tennessee_in_United_States.svg/500px-Tennessee_in_United_States.svg.png'},
+      {id:'state_ak',name:'Alaska',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Alaska_in_United_States.svg/500px-Alaska_in_United_States.svg.png'},
+      {id:'state_hi',name:'Hawaii',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Hawaii_in_United_States.svg/500px-Hawaii_in_United_States.svg.png'},
+    ],
+    type: 'image'
+  },
+  indiastates: {
+    label: 'India States', emoji: '🇮🇳', color: '#2F9E44',
+    items: [
+      {id:'in_mh',name:'Maharashtra',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Maharashtra_in_India_%28claimed%29.svg/500px-Maharashtra_in_India_%28claimed%29.svg.png'},
+      {id:'in_up',name:'Uttar Pradesh', image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Uttar_Pradesh_in_India_%28claimed%29.svg/500px-Uttar_Pradesh_in_India_%28claimed%29.svg.png'},
+      {id:'in_rj',name:'Rajasthan',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Rajasthan_in_India_%28claimed%29.svg/500px-Rajasthan_in_India_%28claimed%29.svg.png'},
+      {id:'in_tn',name:'Tamil Nadu',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Tamil_Nadu_in_India_%28claimed%29.svg/500px-Tamil_Nadu_in_India_%28claimed%29.svg.png'},
+      {id:'in_ka',name:'Karnataka',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Karnataka_in_India_%28claimed%29.svg/500px-Karnataka_in_India_%28claimed%29.svg.png'},
+      {id:'in_gj',name:'Gujarat',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Gujarat_in_India_%28claimed%29.svg/500px-Gujarat_in_India_%28claimed%29.svg.png'},
+      {id:'in_wb',name:'West Bengal',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/West_Bengal_in_India_%28claimed%29.svg/500px-West_Bengal_in_India_%28claimed%29.svg.png'},
+      {id:'in_mp',name:'Madhya Pradesh',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Madhya_Pradesh_in_India_%28claimed%29.svg/500px-Madhya_Pradesh_in_India_%28claimed%29.svg.png'},
+      {id:'in_ap',name:'Andhra Pradesh',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Andhra_Pradesh_in_India_%28claimed%29.svg/500px-Andhra_Pradesh_in_India_%28claimed%29.svg.png'},
+      {id:'in_dl',name:'Delhi',         image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/National_Capital_Territory_of_Delhi_in_India_%28claimed%29.svg/500px-National_Capital_Territory_of_Delhi_in_India_%28claimed%29.svg.png'},
+      {id:'in_ke',name:'Kerala',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Kerala_in_India_%28claimed%29.svg/500px-Kerala_in_India_%28claimed%29.svg.png'},
+      {id:'in_pb',name:'Punjab',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Punjab_in_India_%28claimed%29.svg/500px-Punjab_in_India_%28claimed%29.svg.png'},
+    ],
+    type: 'image'
+  },
+  dinosaurs: {
+    label: 'Dinosaurs', emoji: '🦕', color: '#A9E34B',
+    items: [
+      {id:'dino_trex',         name:'T-Rex',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Tyrannosaurus_rex_Reconstruction_by_Nobu_Tamura.jpg/500px-Tyrannosaurus_rex_Reconstruction_by_Nobu_Tamura.jpg'},
+      {id:'dino_triceratops',  name:'Triceratops',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Triceratops_horridus.png/500px-Triceratops_horridus.png'},
+      {id:'dino_stegosaurus',  name:'Stegosaurus',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Stegosaurus_stenops_Life_Reconstruction.png/500px-Stegosaurus_stenops_Life_Reconstruction.png'},
+      {id:'dino_velociraptor', name:'Velociraptor',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Velociraptor_recon.png/500px-Velociraptor_recon.png'},
+      {id:'dino_brachiosaurus',name:'Brachiosaurus',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/202009_Brachiosaurus_altithorax.png/500px-202009_Brachiosaurus_altithorax.png'},
+      {id:'dino_spinosaurus',  name:'Spinosaurus',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Life_reconstruction_of_Spinosaurus_aegyptiacus.png/500px-Life_reconstruction_of_Spinosaurus_aegyptiacus.png'},
+      {id:'dino_ankylosaurus', name:'Ankylosaurus',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Ankylosaurus_magniventris_reconstruction.png/500px-Ankylosaurus_magniventris_reconstruction.png'},
+      {id:'dino_pterodactyl',  name:'Pterodactyl',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Pterodactylus_BMMS7_life.png/500px-Pterodactylus_BMMS7_life.png'},
+      {id:'dino_diplodocus',   name:'Diplodocus',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Diplodocus_BW.jpg/500px-Diplodocus_BW.jpg'},
+      {id:'dino_carnotaurus',  name:'Carnotaurus',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Carnotaurus_sastrei_life_reconstruction.png/500px-Carnotaurus_sastrei_life_reconstruction.png'},
+    ],
+    type: 'image'
+  },
+  animals: {
+    label: 'Animals', emoji: '🐾', color: '#FF922B',
+    items: [
+      {id:'wild_lion',     name:'Lion',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/020_The_lion_king_Snyggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg/500px-020_The_lion_king_Snyggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg'},
+      {id:'wild_tiger',    name:'Tiger',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg/500px-Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg'},
+      {id:'wild_elephant', name:'Elephant',  image:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/178_Male_African_bush_elephant_in_Etosha_National_Park_Photo_by_Giles_Laurent.jpg/500px-178_Male_African_bush_elephant_in_Etosha_National_Park_Photo_by_Giles_Laurent.jpg'},
+      {id:'wild_giraffe',  name:'Giraffe',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Giraffe_Mikumi_National_Park.jpg/500px-Giraffe_Mikumi_National_Park.jpg'},
+      {id:'wild_zebra',    name:'Zebra',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Equus_quagga_burchellii_-_Etosha%2C_2014.jpg/500px-Equus_quagga_burchellii_-_Etosha%2C_2014.jpg'},
+      {id:'farm_cow',      name:'Cow',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cow_%28Fleckvieh_breed%29_Oeschinensee_Slaunger_2009-07-07.jpg/500px-Cow_%28Fleckvieh_breed%29_Oeschinensee_Slaunger_2009-07-07.jpg'},
+      {id:'farm_horse',    name:'Horse',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Horse_007.jpg/500px-Horse_007.jpg'},
+      {id:'ocean_dolphin', name:'Dolphin',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Tursiops_truncatus_01-cropped.jpg/500px-Tursiops_truncatus_01-cropped.jpg'},
+      {id:'ocean_shark',   name:'Shark',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/White_shark.jpg/500px-White_shark.jpg'},
+      {id:'polar_penguin', name:'Penguin',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Aptenodytes_forsteri_-Snow_Hill_Island%2C_Antarctica_-adults_and_juvenile-8.jpg/500px-Aptenodytes_forsteri_-Snow_Hill_Island%2C_Antarctica_-adults_and_juvenile-8.jpg'},
+      {id:'polar_pb',      name:'Polar Bear',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Polar_Bear_-_Alaska_%28cropped%29.jpg/500px-Polar_Bear_-_Alaska_%28cropped%29.jpg'},
+      {id:'forest_wolf',   name:'Wolf',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Eurasian_wolf_2.jpg/500px-Eurasian_wolf_2.jpg'},
+    ],
+    type: 'image'
+  },
+  birds: {
+    label: 'Birds', emoji: '🐦', color: '#4D96FF',
+    items: [
+      {id:'bird_eagle',   name:'Eagle',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Bald_eagle_about_to_fly_in_Alaska_%282016%29.jpg/500px-Bald_eagle_about_to_fly_in_Alaska_%282016%29.jpg'},
+      {id:'bird_flamingo',name:'Flamingo',  image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Flamingos_Laguna_Colorada.jpg/500px-Flamingos_Laguna_Colorada.jpg'},
+      {id:'bird_peacock', name:'Peacock',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Peacock_on_tree_%2852077240794%29.jpg/500px-Peacock_on_tree_%2852077240794%29.jpg'},
+      {id:'bird_toucan',  name:'Toucan',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toucans_%28Ramphastidae%29.jpg/500px-Toucans_%28Ramphastidae%29.jpg'},
+      {id:'bird_parrot',  name:'Parrot',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Rainbow_lorikeet_%28Trichoglossus_moluccanus_moluccanus%29_Sydney.jpg/500px-Rainbow_lorikeet_%28Trichoglossus_moluccanus_moluccanus%29_Sydney.jpg'},
+      {id:'bird_owl',     name:'Owl',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Bubo_virginianus_06.jpg/500px-Bubo_virginianus_06.jpg'},
+      {id:'bird_puffin',  name:'Puffin',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Puffin_%28Fratercula_arctica%29.jpg/500px-Puffin_%28Fratercula_arctica%29.jpg'},
+      {id:'bird_swan',    name:'Swan',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Mute_Swan_Emsworth2.JPG/500px-Mute_Swan_Emsworth2.JPG'},
+      {id:'bird_macaw',   name:'Macaw',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Ara_ararauna_Luc_Viatour.jpg/500px-Ara_ararauna_Luc_Viatour.jpg'},
+      {id:'bird_falcon',  name:'Falcon',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Falco_peregrinus_m_Humber_Bay_Park_Toronto.jpg/500px-Falco_peregrinus_m_Humber_Bay_Park_Toronto.jpg'},
+    ],
+    type: 'image'
+  },
+  fruits: {
+    label: 'Fruits', emoji: '🍎', color: '#FFD93D',
+    items: [
+      {id:'fruit_apple',   name:'Apple',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/330px-Pink_lady_and_cross_section.jpg'},
+      {id:'fruit_banana',  name:'Banana',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Bananavarieties.jpg/330px-Bananavarieties.jpg'},
+      {id:'fruit_orange',  name:'Orange',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Oranges_-_whole-halved-segment.jpg/330px-Oranges_-_whole-halved-segment.jpg'},
+      {id:'fruit_grapes',  name:'Grapes',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Grapes%2C_Rostov-on-Don%2C_Russia.jpg/330px-Grapes%2C_Rostov-on-Don%2C_Russia.jpg'},
+      {id:'fruit_mango',   name:'Mango',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Mangos_-_single_and_halved.jpg/330px-Mangos_-_single_and_halved.jpg'},
+      {id:'fruit_stberry', name:'Strawberry', image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Garden_strawberry_%28Fragaria_%C3%97_ananassa%29_single2.jpg/330px-Garden_strawberry_%28Fragaria_%C3%97_ananassa%29_single2.jpg'},
+      {id:'fruit_pineap',  name:'Pineapple',  image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B5%8D%E0%B4%95%E0%B5%8D%E0%B4%95.jpg/330px-%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B5%8D%E0%B4%95%E0%B5%8D%E0%B4%95.jpg'},
+      {id:'fruit_watermel',name:'Watermelon', image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg/330px-Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg'},
+      {id:'fruit_kiwi',    name:'Kiwi',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Actinidia_fruits.jpg/330px-Actinidia_fruits.jpg'},
+      {id:'fruit_cherry',  name:'Cherry',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Cherry_season_%2848216568227%29.jpg/330px-Cherry_season_%2848216568227%29.jpg'},
+    ],
+    type: 'image'
+  },
+  vegetables: {
+    label: 'Vegetables', emoji: '🥦', color: '#6BCB77',
+    items: [
+      {id:'veg_carrot',   name:'Carrot',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Vegetable-Carrot-Bundle-wStalks.jpg/330px-Vegetable-Carrot-Bundle-wStalks.jpg'},
+      {id:'veg_broccoli', name:'Broccoli',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Broccoli_and_cross_section_edit.jpg/330px-Broccoli_and_cross_section_edit.jpg'},
+      {id:'veg_potato',   name:'Potato',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Patates.jpg/330px-Patates.jpg'},
+      {id:'veg_corn',     name:'Corn',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Zea_mays_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-283.jpg/330px-Zea_mays_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-283.jpg'},
+      {id:'veg_cucumber', name:'Cucumber',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/ARS_cucumber.jpg/330px-ARS_cucumber.jpg'},
+      {id:'veg_pepper',   name:'Bell Pepper', image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Green-Yellow-Red-Pepper-2009.jpg/330px-Green-Yellow-Red-Pepper-2009.jpg'},
+      {id:'veg_onion',    name:'Onion',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mixed_onions.jpg/330px-Mixed_onions.jpg'},
+      {id:'veg_pumpkin',  name:'Pumpkin',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/FrenchMarketPumpkinsB.jpg/330px-FrenchMarketPumpkinsB.jpg'},
+      {id:'veg_spinach',  name:'Spinach',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Spinacia_oleracea_Spinazie_bloeiend.jpg/330px-Spinacia_oleracea_Spinazie_bloeiend.jpg'},
+      {id:'veg_chili',    name:'Chili Pepper',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Madame_Jeanette_and_other_chillies.jpg/330px-Madame_Jeanette_and_other_chillies.jpg'},
+    ],
+    type: 'image'
+  },
+  shapes: {
+    label: 'Shapes', emoji: '🔷', color: '#63E6BE',
+    items: [
+      {id:'shape_circle',   name:'Circle',    shape:'circle'},
+      {id:'shape_square',   name:'Square',    shape:'square'},
+      {id:'shape_triangle', name:'Triangle',  shape:'triangle'},
+      {id:'shape_rectangle',name:'Rectangle', shape:'rectangle'},
+      {id:'shape_star',     name:'Star',      shape:'star'},
+      {id:'shape_heart',    name:'Heart',     shape:'heart'},
+      {id:'shape_oval',     name:'Oval',      shape:'oval'},
+      {id:'shape_diamond',  name:'Diamond',   shape:'diamond'},
+      {id:'shape_pentagon', name:'Pentagon',  shape:'pentagon'},
+      {id:'shape_hexagon',  name:'Hexagon',   shape:'hexagon'},
+    ],
+    type: 'shape'
+  },
+  colors: {
+    label: 'Colors', emoji: '🎨', color: '#FFA94D',
+    items: [
+      {id:'color_red',    name:'Red',         hex:'#E53935'},
+      {id:'color_blue',   name:'Blue',        hex:'#1E88E5'},
+      {id:'color_yellow', name:'Yellow',      hex:'#FDD835'},
+      {id:'color_orange', name:'Orange',      hex:'#FB8C00'},
+      {id:'color_green',  name:'Green',       hex:'#43A047'},
+      {id:'color_purple', name:'Purple',      hex:'#8E24AA'},
+      {id:'color_pink',   name:'Pink',        hex:'#E91E63'},
+      {id:'color_brown',  name:'Brown',       hex:'#795548'},
+      {id:'color_black',  name:'Black',       hex:'#212121'},
+      {id:'color_white',  name:'White',       hex:'#F5F5F5'},
+      {id:'color_roro',   name:'Red-Orange',  hex:'#F4511E'},
+      {id:'color_yoro',   name:'Yellow-Orange',hex:'#FFB300'},
+    ],
+    type: 'color'
+  },
+};
+
+const CATEGORY_ORDER = [
+  'cars','flags','continents','countries','usastates','indiastates',
+  'dinosaurs','animals','birds','fruits','vegetables','shapes','colors'
+];
+
+// ── Shape renderer (CSS only) ─────────────────────────────────────────
+function renderShape(shape, size) {
+  const s = size || 140;
+  const half = s / 2;
+  const svgs = {
+    circle: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#4D96FF"/></svg>`,
+    square: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="10" width="80" height="80" rx="4" fill="#FF922B"/></svg>`,
+    triangle: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="50,8 95,92 5,92" fill="#6BCB77"/></svg>`,
+    rectangle: `<svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="124" height="64" rx="4" fill="#FFD93D"/></svg>`,
+    star: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="#FFD93D"/></svg>`,
+    heart: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50,85 C20,65 5,45 5,30 C5,15 17,5 30,5 C38,5 45,9 50,15 C55,9 62,5 70,5 C83,5 95,15 95,30 C95,45 80,65 50,85Z" fill="#FF6B6B"/></svg>`,
+    oval: `<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg"><ellipse cx="60" cy="40" rx="55" ry="32" fill="#CC5DE8"/></svg>`,
+    diamond: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 95,50 50,95 5,50" fill="#4ECDC4"/></svg>`,
+    pentagon: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 95,36 78,90 22,90 5,36" fill="#74C0FC"/></svg>`,
+    hexagon: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5" fill="#A9E34B"/></svg>`,
+  };
+  const blob = new Blob([svgs[shape] || svgs.circle], {type: 'image/svg+xml'});
+  return URL.createObjectURL(blob);
+}
+
+// ── Build hero phone grid ─────────────────────────────────────────────
+function buildHeroPhone() {
+  const grid = document.getElementById('heroPhoneGrid');
+  const sample = [
+    {emoji:'🌍',label:'Flags',  color:'#4ECDC4'},
+    {emoji:'🦕',label:'Dinos',  color:'#A9E34B'},
+    {emoji:'🐾',label:'Animals',color:'#FF922B'},
+    {emoji:'🇺🇸',label:'States', color:'#E03131'},
+    {emoji:'🍎',label:'Fruits', color:'#FFD93D'},
+    {emoji:'🌐',label:'Countries',color:'#CC5DE8'},
+  ];
+  grid.innerHTML = sample.map(c =>
+    `<div class="hero-phone-card" style="background:${c.color}">
+      <span>${c.emoji}</span><span>${c.label}</span>
+    </div>`
+  ).join('');
+}
+
+// ── Build landing category grid ───────────────────────────────────────
+function buildCatGrid() {
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = CATEGORY_ORDER.map(key => {
+    const cat = DATA[key];
+    if (!cat) return '';
+    return `<div class="cat-card" style="background:${cat.color}" onclick="selectCatAndScroll('${key}')">
+      <span class="cat-emoji">${cat.emoji}</span>
+      <span class="cat-label">${cat.label}</span>
+      <span class="cat-count">${cat.items.length} items</span>
+    </div>`;
+  }).join('');
+}
+
+function selectCatAndScroll(key) {
+  selectQuizCat(key);
+  document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+}
+
+// ── Build quiz category picker ────────────────────────────────────────
+function buildQuizCatGrid() {
+  const grid = document.getElementById('quizCatGrid');
+  grid.innerHTML = CATEGORY_ORDER.map(key => {
+    const cat = DATA[key];
+    if (!cat) return '';
+    return `<button class="quiz-cat-btn" id="qcb_${key}" onclick="selectQuizCat('${key}')">
+      <span class="qcb-emoji">${cat.emoji}</span>
+      <span class="qcb-name">${cat.label}</span>
+    </button>`;
+  }).join('');
+}
+
+// ── Quiz state ────────────────────────────────────────────────────────
+let qState = {
+  catKey: null, questions: [], pool: [], index: 0,
+  score: 0, selected: null, choices: []
+};
+
+function selectQuizCat(key) {
+  qState.catKey = key;
+  document.querySelectorAll('.quiz-cat-btn').forEach(b => b.classList.remove('selected'));
+  const btn = document.getElementById('qcb_' + key);
+  if (btn) btn.classList.add('selected');
+  document.getElementById('startQuizBtn').style.display = 'inline-block';
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getChoices(pool, correct) {
+  const others = shuffle(pool.filter(i => i.id !== correct.id)).slice(0, 3);
+  return shuffle([correct, ...others]);
+}
+
+function startQuiz() {
+  if (!qState.catKey) return;
+  const cat = DATA[qState.catKey];
+  qState.questions = shuffle(cat.items).slice(0, Math.min(10, cat.items.length));
+  qState.pool = cat.items;
+  qState.index = 0;
+  qState.score = 0;
+
+  document.getElementById('quiz-picker').style.display = 'none';
+  document.getElementById('quiz-results').style.display = 'none';
+  document.getElementById('quiz-game').style.display = 'block';
+
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const { questions, pool, index, score } = qState;
+  const current = questions[index];
+  const choices = getChoices(pool, current);
+  qState.choices = choices;
+  qState.selected = null;
+
+  // topbar
+  document.getElementById('qProgress').textContent = `${index + 1} / ${questions.length}`;
+  document.getElementById('qScore').textContent = `Score: ${score}`;
+
+  // image card
+  const imgCard = document.getElementById('qImgCard');
+  const cat = DATA[qState.catKey];
+  imgCard.innerHTML = renderItemVisual(current, cat.type);
+
+  // choices
+  const choicesEl = document.getElementById('qChoices');
+  choicesEl.innerHTML = choices.map((c, i) =>
+    `<button class="choice-btn" id="choice_${i}" onclick="handleAnswer(${i})">${c.name}</button>`
+  ).join('');
+
+  // next btn
+  const nextBtn = document.getElementById('qNextBtn');
+  nextBtn.classList.add('hidden');
+  nextBtn.classList.remove('go-green');
+  nextBtn.textContent = index === questions.length - 1 ? 'See Results 🎉' : 'Next ▶';
+}
+
+function renderItemVisual(item, type) {
+  if (type === 'flag') {
+    return `<div class="quiz-flag-emoji">${item.emoji}</div>`;
+  }
+  if (type === 'color') {
+    return `<div class="quiz-color-swatch" style="background:${item.hex}"></div>`;
+  }
+  if (type === 'shape') {
+    const url = renderShape(item.shape);
+    return `<img class="quiz-shape-svg" src="${url}" alt="${item.name}" />`;
+  }
+  if (type === 'text') {
+    return `<div style="font-size:2.5rem;font-weight:900;color:#555;text-align:center;padding:20px">${item.name}</div>`;
+  }
+  // image
+  return `<img src="${item.image}" alt="${item.name}" style="max-width:100%;max-height:220px;object-fit:contain;border-radius:12px;" loading="lazy" />`;
+}
+
+function handleAnswer(choiceIndex) {
+  if (qState.selected !== null) return;
+  qState.selected = choiceIndex;
+  const current = qState.questions[qState.index];
+  const choice = qState.choices[choiceIndex];
+
+  if (choice.id === current.id) qState.score++;
+
+  // speak the answer
+  if ('speechSynthesis' in window) {
+    const utt = new SpeechSynthesisUtterance(current.name);
+    utt.lang = 'en-US';
+    speechSynthesis.speak(utt);
+  }
+
+  // colour the buttons
+  qState.choices.forEach((c, i) => {
+    const btn = document.getElementById('choice_' + i);
+    btn.disabled = true;
+    if (c.id === current.id) btn.classList.add('correct');
+    else if (i === choiceIndex) btn.classList.add('wrong');
+  });
+
+  const nextBtn = document.getElementById('qNextBtn');
+  nextBtn.classList.remove('hidden');
+  if (qState.index === qState.questions.length - 1) {
+    nextBtn.classList.add('go-green');
+  }
+  document.getElementById('qScore').textContent = `Score: ${qState.score}`;
+}
+
+function nextQuestion() {
+  if (qState.index < qState.questions.length - 1) {
+    qState.index++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-game').style.display = 'none';
+  const results = document.getElementById('quiz-results');
+  results.style.display = 'block';
+
+  const pct = Math.round((qState.score / qState.questions.length) * 100);
+  document.getElementById('rEmoji').textContent  = pct >= 80 ? '🏆' : pct >= 50 ? '👍' : '💪';
+  document.getElementById('rTitle').textContent  = pct >= 80 ? 'Amazing!' : pct >= 50 ? 'Good job!' : 'Keep practicing!';
+  document.getElementById('rScore').textContent  = `${qState.score} / ${qState.questions.length}`;
+  document.getElementById('rPct').textContent    = `${pct}%`;
+}
+
+function restartQuiz() {
+  startQuiz();
+}
+
+function backToPicker() {
+  document.getElementById('quiz-game').style.display = 'none';
+  document.getElementById('quiz-results').style.display = 'none';
+  document.getElementById('quiz-picker').style.display = 'block';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+buildHeroPhone();
+buildCatGrid();
+buildQuizCatGrid();
+</script>
+</body>
+</html>
