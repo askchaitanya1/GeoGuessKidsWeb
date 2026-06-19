@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Geo Guess Kids — Learn & Quiz</title>
-<meta name="description" content="A free visual quiz app for kids. Learn countries, flags, dinosaurs, animals, shapes and more. Available on iOS and Android." />
+<meta name="description" content="A free visual quiz app for kids. Learn countries, flags, dinosaurs, animals, insects, flowers, trees and more. Available on iOS and Android." />
 <style>
   /* ── Reset & Base ── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -355,7 +355,7 @@
 <section id="hero">
   <div class="hero-badge">🎉 Free for kids — no ads, no accounts</div>
   <h1>Learn the World,<br>One Guess at a Time</h1>
-  <p>Visual flashcards and quizzes covering 15 categories — flags, countries, dinosaurs, animals, states and more. For curious kids aged 4–12.</p>
+  <p>Visual flashcards and quizzes covering 16 categories — flags, countries, dinosaurs, animals, insects, flowers, trees and more. For curious kids aged 4–12.</p>
   <div class="hero-btns">
     <a href="#quiz" class="btn-primary">Play the Demo ▶</a>
     <a href="#download" class="btn-secondary">Get the App</a>
@@ -371,8 +371,8 @@
 
 <!-- ════════════════ STATS ════════════════ -->
 <section id="stats">
-  <div class="stat"><span class="stat-num">15</span><span class="stat-lbl">Categories</span></div>
-  <div class="stat"><span class="stat-num">500+</span><span class="stat-lbl">Items to Learn</span></div>
+  <div class="stat"><span class="stat-num">16</span><span class="stat-lbl">Categories</span></div>
+  <div class="stat"><span class="stat-num">600+</span><span class="stat-lbl">Items to Learn</span></div>
   <div class="stat"><span class="stat-num">2</span><span class="stat-lbl">Platforms</span></div>
   <div class="stat"><span class="stat-num">∞</span><span class="stat-lbl">Replays</span></div>
 </section>
@@ -380,7 +380,7 @@
 <!-- ════════════════ CATEGORIES ════════════════ -->
 <section id="categories">
   <div class="container">
-    <h2 class="section-title">15 Categories to Explore</h2>
+    <h2 class="section-title">16 Categories to Explore</h2>
     <p class="section-sub">Tap any category to jump straight into the quiz</p>
     <div class="cat-grid" id="catGrid"></div>
   </div>
@@ -468,17 +468,25 @@
 <!-- ════════════════ DOWNLOAD ════════════════ -->
 <section id="download">
   <h2>Get the Full App</h2>
-  <p>All 15 categories, voice pronunciation, learn mode + quiz mode, and a parent inbox — completely free.</p>
+  <p>All 16 categories, voice pronunciation, learn mode + quiz mode, and a parent inbox — completely free.</p>
   <div class="store-btns">
-    <span class="store-btn"><span class="store-btn-icon">🍎</span><span><strong>App Store</strong><br><small>Coming soon</small></span></span>
-    <span class="store-btn"><span class="store-btn-icon">🤖</span><span><strong>Google Play</strong><br><small>Coming soon</small></span></span>
+    <span class="store-btn"><span class="store-btn-icon">🍎</span><span><strong>App Store</strong><br><small>Coming soon on iOS</small></span></span>
+    <a href="https://play.google.com/store/apps/details?id=com.kidslearnapp&pcampaignid=web_share" target="_blank" class="store-btn">
+      <svg class="store-btn-icon" viewBox="0 0 24 24" width="28" height="28" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.18 23.76c.3.17.64.24.98.24.4 0 .8-.11 1.15-.32L17 17l-3.07-3.07L3.18 23.76z"/>
+        <path d="M.5 1.4A2 2 0 0 0 0 2.67v18.67a2 2 0 0 0 .5 1.27l.07.06 10.46-10.46v-.24L.57 1.34.5 1.4z"/>
+        <path d="M17 7 5.31.32A1.99 1.99 0 0 0 4.16 0c-.34 0-.68.07-.98.24L13.93 11 17 7z"/>
+        <path d="m20.54 10.23-3.54-2.04L13.93 11 17 14.07l3.55-2.05a2 2 0 0 0 0-1.79z"/>
+      </svg>
+      <span><strong>Google Play</strong><br><small>Download for Android</small></span>
+    </a>
   </div>
 </section>
 
 <!-- ════════════════ FOOTER ════════════════ -->
 <footer>
   <strong>Geo Guess Kids</strong> — A visual learning app for curious kids<br>
-  Built with React Native · Expo SDK 54 · Available on iOS &amp; Android<br>
+  Built with React Native · Expo SDK 54 · Available on Android · iOS coming soon<br>
   All logos, trademarks and images are copyright of their respective owners. No copyright infringement is intended.<br>
   Images sourced from Wikipedia / Wikimedia Commons under Creative Commons licenses.<br>
   <a href="privacy.html" style="color:rgba(255,255,255,.7);text-decoration:underline;">Privacy Policy</a>
@@ -764,11 +772,59 @@ const DATA = {
     ],
     type: 'text'
   },
+  insects: {
+    label: 'Insects', emoji: '🦋', color: '#FF922B',
+    items: [
+      {id:'ins_butterfly',  name:'Butterfly',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Gatto_europeo4.jpg/500px-Gatto_europeo4.jpg'},
+      {id:'ins_bee',        name:'Honey Bee',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Apis_mellifera_Western_honey_bee.jpg/500px-Apis_mellifera_Western_honey_bee.jpg'},
+      {id:'ins_ant',        name:'Ant',            image:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Camponotus.flavomarginatus.ant.jpg/500px-Camponotus.flavomarginatus.ant.jpg'},
+      {id:'ins_dragonfly',  name:'Dragonfly',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Dragonfly_eye_3811.jpg/500px-Dragonfly_eye_3811.jpg'},
+      {id:'ins_grasshopper',name:'Grasshopper',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Grasshopper_0921.jpg/500px-Grasshopper_0921.jpg'},
+      {id:'ins_ladybug',    name:'Ladybug',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Coccinella_magnifica01.jpg/500px-Coccinella_magnifica01.jpg'},
+      {id:'ins_mosquito',   name:'Mosquito',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Female_Aedes_aegypti_feeding_2.jpg/500px-Female_Aedes_aegypti_feeding_2.jpg'},
+      {id:'ins_praying',    name:'Praying Mantis', image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Praying_Mantis_2.jpg/500px-Praying_Mantis_2.jpg'},
+      {id:'ins_firefly',    name:'Firefly',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Firefly_in_the_night_%28Explored%29.jpg/500px-Firefly_in_the_night_%28Explored%29.jpg'},
+      {id:'ins_wasp',       name:'Wasp',           image:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Common_wasp_aka.jpg/500px-Common_wasp_aka.jpg'},
+    ],
+    type: 'image'
+  },
+  flowers: {
+    label: 'Flowers', emoji: '🌸', color: '#CC5DE8',
+    items: [
+      {id:'fl_rose',       name:'Rose',          image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Rosa_-_Horticulture_Show%2C_Melbourne%2C_2014.jpg/500px-Rosa_-_Horticulture_Show%2C_Melbourne%2C_2014.jpg'},
+      {id:'fl_sunflower',  name:'Sunflower',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/500px-Sunflower_sky_backdrop.jpg'},
+      {id:'fl_tulip',      name:'Tulip',         image:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Tulipa_suaveolens_floriade2.jpg/500px-Tulipa_suaveolens_floriade2.jpg'},
+      {id:'fl_daisy',      name:'Daisy',         image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camomile_Flowers_-_UK.jpg/500px-Camomile_Flowers_-_UK.jpg'},
+      {id:'fl_lotus',      name:'Lotus',         image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Lotus_flowers_in_Peradeniya_garden.jpg/500px-Lotus_flowers_in_Peradeniya_garden.jpg'},
+      {id:'fl_orchid',     name:'Orchid',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Dendrobium_sp_Kadavoor.jpg/500px-Dendrobium_sp_Kadavoor.jpg'},
+      {id:'fl_lavender',   name:'Lavender',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Single_lavender_flower02.jpg/500px-Single_lavender_flower02.jpg'},
+      {id:'fl_hibiscus',   name:'Hibiscus',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hibiscus_rosa-sinensis_%28Türkisches_Mädchen%29.jpg/500px-Hibiscus_rosa-sinensis_%28Türkisches_Mädchen%29.jpg'},
+      {id:'fl_marigold',   name:'Marigold',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Tagetes_erecta_-_Marigold_%28Flower%29.jpg/500px-Tagetes_erecta_-_Marigold_%28Flower%29.jpg'},
+      {id:'fl_jasmine',    name:'Jasmine',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/JasmineFlower.jpg/500px-JasmineFlower.jpg'},
+    ],
+    type: 'image'
+  },
+  trees: {
+    label: 'Trees', emoji: '🌳', color: '#2F9E44',
+    items: [
+      {id:'tree_oak',      name:'Oak Tree',      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Angel_Oak.jpg/500px-Angel_Oak.jpg'},
+      {id:'tree_pine',     name:'Pine Tree',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Scots_Pine_Pinus_sylvestris_Tree.jpg/500px-Scots_Pine_Pinus_sylvestris_Tree.jpg'},
+      {id:'tree_palm',     name:'Palm Tree',     image:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Coconut_palm_tree.jpg/500px-Coconut_palm_tree.jpg'},
+      {id:'tree_maple',    name:'Maple Tree',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/500px-A_small_cup_of_coffee.JPG'},
+      {id:'tree_cherry',   name:'Cherry Blossom',image:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Cherry_tree_in_Vancouver_1.jpg/500px-Cherry_tree_in_Vancouver_1.jpg'},
+      {id:'tree_banyan',   name:'Banyan Tree',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Banyan_Tree_at_Lahaina%2C_Hawaii.jpg/500px-The_Banyan_Tree_at_Lahaina%2C_Hawaii.jpg'},
+      {id:'tree_bamboo',   name:'Bamboo',        image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Bambusoideae_Forest.JPG/500px-Bambusoideae_Forest.JPG'},
+      {id:'tree_apple',    name:'Apple Tree',    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Malus-x-domestica.jpg/500px-Malus-x-domestica.jpg'},
+      {id:'tree_willow',   name:'Willow Tree',   image:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Salix_babylonica.jpg/500px-Salix_babylonica.jpg'},
+      {id:'tree_sequoia',  name:'Sequoia',       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/General_Sherman_tree_looking_up.jpg/500px-General_Sherman_tree_looking_up.jpg'},
+    ],
+    type: 'image'
+  },
 };
 
 const CATEGORY_ORDER = [
   'cars','flags','continents','countries','usastates','indiastates',
-  'dinosaurs','pokemon','animals','birds','fruits','vegetables','shapes','colors','oceans'
+  'dinosaurs','pokemon','animals','birds','fruits','vegetables','insects','flowers','oceans','trees'
 ];
 
 // ── Shape renderer (CSS only) ─────────────────────────────────────────
